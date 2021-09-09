@@ -3,7 +3,7 @@ import json
 import os
 from os.path import dirname, abspath, exists
 
-from exceptions import ProfileNotFoundError
+from .exceptions import ProfileNotFoundError
 
 CONNS_FILE = dirname(abspath(__file__)) + '/conns.json'
 
