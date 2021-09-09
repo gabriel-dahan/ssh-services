@@ -4,8 +4,8 @@ setuptools.setup(
     name = "sshservices",
     version = "1.0",
     author = "Gabriel D.",
-    description = "Some functions to work with SSH.",
-    url = "https://github.com/gabriel-dahan/ssh-py-services",
+    description = "SSH utilities to manage and connect to SSH Servers.",
+    url = "https://github.com/gabriel-dahan/ssh-services",
     packages = setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3"
