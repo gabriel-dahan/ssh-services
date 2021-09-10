@@ -53,7 +53,7 @@ def posix_shell(chan):
                     x = u(chan.recv(1024))
                     if len(x) == 0:
                         sys.stdout.write("\r\n- Connection closed -\r\n")
-                        break
+                        sys.exit(1)
                     sys.stdout.write(x)
                     sys.stdout.flush()
                 except socket.timeout:
@@ -76,8 +76,8 @@ def windows_shell(chan):
             data = sock.recv(256)
             if not data:
                 sys.stdout.write("\r\n- Connection closed -\r\n\r\n")
-                sys.stdout.flush()
-                break
+                # sys.stdout.flush()
+                sys.exit(1)
             sys.stdout.write(data.decode('utf-8'))
             sys.stdout.flush()
 
@@ -85,10 +85,13 @@ def windows_shell(chan):
     writer.start()
     try:
         while True:
-            d = sys.stdin.read(1)
-            if not d:
-                break
-            chan.send(d)
+            try:
+                d = sys.stdin.read(1)
+                if not d:
+                    break
+                chan.send(d)
+            except KeyboardInterrupt:
+                chan.send('\x03'.encode())
     except EOFError:
         # user hit ^Z or F6
         pass
