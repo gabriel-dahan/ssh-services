@@ -143,6 +143,8 @@ class SSHManager(object):
         self._conns_file = _load_json()
 
     def get(self, profile: str) -> SSHConnection:
+        """ Get a saved SSH profile. """
+
         try:
             profile = self._conns_file['conns'][profile]
         except TypeError:
@@ -155,6 +157,8 @@ class SSHManager(object):
         )
 
     def delete(self, profile: str) -> None:
+        """ Delete a saved SSH profile. """
+
         try:
             self._conns_file['conns'][profile]
         except TypeError:
@@ -164,6 +168,8 @@ class SSHManager(object):
             json.dump(self._conns_file, f, indent = 4)
 
     def edit(self, profile: str, **kwargs) -> None:
+        """ Edit a saved SSH profile. """
+
         new_conf = self._conns_file['conns'][profile]
         if ('username' or 'user') in kwargs:
             try:
