@@ -3,7 +3,10 @@ import json
 import os
 from os.path import dirname, abspath, exists
 
-from .exceptions import ProfileNotFoundError
+try:
+    from exceptions import ProfileNotFoundError
+except ImportError:
+    from .exceptions import ProfileNotFoundError
 
 CONNS_FILE = dirname(abspath(__file__)) + '/conns.json'
 
@@ -157,6 +160,31 @@ class SSHManager(object):
         except TypeError:
             raise ProfileNotFoundError(f'Profile \'{profile}\' was not found.')
         self._conns_file['conns'].pop(profile)
+        with open(CONNS_FILE, 'w') as f:
+            json.dump(self._conns_file, f, indent = 4)
+
+    def edit(self, profile: str, **kwargs) -> None:
+        new_conf = self._conns_file['conns'][profile]
+        if ('username' or 'user') in kwargs:
+            try:
+                username = kwargs['username']
+            except:
+                username = kwargs['user']
+            new_conf['username'] = username
+        elif ('ip' or 'host') in kwargs:
+            try:
+                ip = kwargs['ip']
+            except:
+                ip = kwargs['host']
+            new_conf['ip'] = ip
+        elif ('password' or 'passwd') in kwargs:
+            try:
+                passwd = kwargs['passwd']
+            except:
+                passwd = kwargs['password']
+            new_conf['passwd'] = passwd
+        elif 'port' in kwargs:
+            new_conf['port'] = kwargs['port']
         with open(CONNS_FILE, 'w') as f:
             json.dump(self._conns_file, f, indent = 4)
 
