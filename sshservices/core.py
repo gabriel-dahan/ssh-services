@@ -20,10 +20,7 @@ def _load_json():
     return conns_file
 
 def _cls():
-    if os.name == 'nt':
-        _ = os.system('cls')
-    else:
-        _ = os.system('clear')
+    _ = os.system('cls') if os.name == 'nt' else os.system('clear')
 
 class SSHConnection(object):
 
@@ -70,7 +67,6 @@ class SSHConnection(object):
         self._conns_file['conns'][profile] = data
         with open(CONNS_FILE, 'w') as f:
             json.dump(self._conns_file, f, indent = 4)
-
         self.profile = profile
 
     def connect(self) -> None:
@@ -195,20 +191,25 @@ class SSHManager(object):
             json.dump(self._conns_file, f, indent = 4)
 
     def profiles(self) -> List[SSHConnection]:
+        """ Return a list of the saved profiles. """
+
         json_profiles = self._conns_file['conns']
-        profiles = [SSHConnection(
+        return [SSHConnection(
             json_profiles[profile]['ip'],
             json_profiles[profile]['username'],
             json_profiles[profile]['passwd'],
             json_profiles[profile]['port']
         ) for profile in json_profiles]
-        return profiles
 
     def interactive_conn(self) -> None:
+        """ Interactively connect to your profiles using terminal. """
+
         profiles = self.profiles()
-        choices = ''
-        for i, profile in enumerate(profiles):
-            choices += f'   [{i + 1}] {profile.profile} : {profile.get_username()}@{profile.get_ip()}:{profile.get_port()}\n'
+        choices = ''.join(
+            f'   [{i + 1}] {profile.profile} : {profile.get_username()}@{profile.get_ip()}:{profile.get_port()}\n'
+            for i, profile in enumerate(profiles)
+        )
+
         if not choices:
             choices = '    No profile created.\n'
         try:
